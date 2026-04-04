@@ -7,13 +7,13 @@ export interface User {
 }
 
 export const login = async (email: string, password: string): Promise<User> => {
- const res = await fetch('https://medical-bc.onrender.com/api/auth/login', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({ email, password })
-});
+  const res = await fetch('http://localhost:5000/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email, password })
+  });
 
   const data = await res.json();
 
@@ -21,35 +21,26 @@ export const login = async (email: string, password: string): Promise<User> => {
     throw new Error(data.message || 'Login failed');
   }
 
-  localStorage.setItem('token', data.token);
-  localStorage.setItem('user', JSON.stringify(data.user));
-
   return {
     ...data.user,
-    id: String(data.user.id),
-    password: ''
+    id: String(data.user.id)
   };
 };
 
 export const logout = (): void => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
+  localStorage.removeItem('currentUser');
 };
 
 export const getCurrentUser = (): User | null => {
-  const user = localStorage.getItem('user');
+  const user = localStorage.getItem('currentUser');
 
   if (!user) return null;
 
-  const parsedUser = JSON.parse(user);
-
-  return {
-    ...parsedUser,
-    id: String(parsedUser.id),
-    password: ''
-  };
+  return JSON.parse(user);
 };
 
 export const isAuthenticated = (): boolean => {
-  return !!localStorage.getItem('token');
+  return !!localStorage.getItem('currentUser');
 };
