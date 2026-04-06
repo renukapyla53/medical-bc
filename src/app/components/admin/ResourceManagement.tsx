@@ -14,9 +14,11 @@ export default function ResourceManagement() {
   const [content, setContent] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const fetchResources = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/resources');
+      const res = await fetch(`${API_URL}/api/resources`);
       const data = await res.json();
       setResources(data);
     } catch (error) {
@@ -35,7 +37,7 @@ export default function ResourceManagement() {
 
     try {
       if (editingId) {
-        await fetch(`http://localhost:5000/api/resources/${editingId}`, {
+        await fetch(`${API_URL}/api/resources/${editingId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -43,7 +45,7 @@ export default function ResourceManagement() {
           body: JSON.stringify(resourceData),
         });
       } else {
-        await fetch('http://localhost:5000/api/resources', {
+        await fetch(`${API_URL}/api/resources`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -71,7 +73,7 @@ export default function ResourceManagement() {
 
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`http://localhost:5000/api/resources/${id}`, {
+      await fetch(`${API_URL}/api/resources/${id}`, {
         method: 'DELETE',
       });
       fetchResources();
@@ -144,5 +146,3 @@ export default function ResourceManagement() {
     </div>
   );
 }
-
-

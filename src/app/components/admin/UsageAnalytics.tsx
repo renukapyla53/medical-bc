@@ -32,8 +32,10 @@ export default function UsageAnalytics() {
     programs: 0
   });
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
-    fetch('http://localhost:5000/api/analytics')
+    fetch(`${API_URL}/api/analytics`)
       .then(res => res.json())
       .then(setData);
   }, []);
@@ -57,13 +59,11 @@ export default function UsageAnalytics() {
     <div style={{ padding: '20px' }}>
       <h2>Analytics Dashboard</h2>
 
-      {/* Bar Chart */}
       <div style={{ width: '500px', marginBottom: '40px' }}>
         <h3>Bar Chart</h3>
         <Bar data={chartData} />
       </div>
 
-      {/* Pie Chart */}
       <div style={{ width: '400px' }}>
         <h3>Pie Chart</h3>
         <Pie data={chartData} />

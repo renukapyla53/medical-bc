@@ -7,7 +7,9 @@ export interface User {
 }
 
 export const login = async (email: string, password: string): Promise<User> => {
-  const res = await fetch('http://localhost:5000/login', {
+  const API_URL = import.meta.env.VITE_API_URL as string;
+
+  const res = await fetch(`${API_URL}/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

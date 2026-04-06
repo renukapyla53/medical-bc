@@ -3,10 +3,14 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "scripts": {
-    "build": "vite build",
-    "dev": "vite"
-  },
+ "scripts": {
+  "dev": "vite",
+  "frontend": "vite",
+  "backend": "cd backend && node server.js",
+  "fullstack": "concurrently \"npm run backend\" \"npm run frontend\"",
+  "build": "vite build"
+},
+
   "dependencies": {
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
@@ -69,6 +73,7 @@
   "devDependencies": {
     "@tailwindcss/vite": "4.1.12",
     "@vitejs/plugin-react": "4.7.0",
+    "concurrently": "^9.2.1",
     "tailwindcss": "4.1.12",
     "vite": "6.3.5"
   },
