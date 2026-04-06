@@ -15,9 +15,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const storedUser = localStorage.getItem('currentUser');
+
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
       } catch (error) {
         localStorage.removeItem('currentUser');
       }
@@ -29,14 +31,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const authenticatedUser = await loginUser(email, password);
 
       if (authenticatedUser) {
-        const { password: _, ...userWithoutPassword } = authenticatedUser;
-        setUser(authenticatedUser);
+        const { password: _password, ...userWithoutPassword } = authenticatedUser;
+
+        setUser(userWithoutPassword as User);
         localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword));
+
         return true;
       }
 
       return false;
     } catch (error) {
+      console.error('Login error:', error);
       return false;
     }
   };
@@ -59,8 +64,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
+
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
+
   return context;
 }

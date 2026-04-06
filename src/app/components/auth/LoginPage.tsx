@@ -14,28 +14,33 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     if (isSignUp) {
-      // Sign up validation
       if (formData.password !== formData.confirmPassword) {
         setError('Passwords do not match');
         return;
       }
+
       if (formData.password.length < 6) {
         setError('Password must be at least 6 characters');
         return;
       }
+
       setError('Sign up feature is for demonstration only. Please use existing credentials to login.');
       return;
     }
 
-    // Login
-    const success = login(formData.email, formData.password);
-    if (!success) {
-      setError('Invalid email or password');
+    try {
+      const success = await login(formData.email, formData.password);
+
+      if (!success) {
+        setError('Invalid email or password');
+      }
+    } catch (err) {
+      setError('Login failed. Please check backend and database connection.');
     }
   };
 
@@ -46,7 +51,6 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-pink-50 to-blue-100 flex items-center justify-center p-4">
-      {/* Security Notice Banner */}
       <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-[#0D47A1] to-[#880E4F] text-white py-3 px-4 z-50 shadow-lg">
         <div className="max-w-6xl mx-auto flex items-center justify-center gap-2 text-sm font-medium">
           <Shield size={16} />
@@ -55,7 +59,6 @@ export default function LoginPage() {
       </div>
 
       <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center mt-12">
-        {/* Left Side - Branding */}
         <div className="hidden lg:block">
           <div className="bg-gradient-to-br from-[#1565C0] via-[#64B5F6] to-[#F06292] rounded-3xl p-12 text-white shadow-2xl transform hover:scale-[1.02] transition-transform duration-300">
             <div className="flex items-center gap-3 mb-6">
@@ -64,9 +67,11 @@ export default function LoginPage() {
               </div>
               <h1 className="text-3xl font-bold">Student Wellness Hub</h1>
             </div>
+
             <p className="text-xl text-blue-50 mb-8">
               Your comprehensive platform for health and wellness resources
             </p>
+
             <div className="space-y-4">
               <FeatureItem
                 icon={Activity}
@@ -88,16 +93,17 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Right Side - Login Form */}
         <div className="w-full max-w-md mx-auto">
           <div className="bg-white rounded-3xl shadow-2xl p-8 border-2 border-pink-100">
             <div className="text-center mb-8">
               <div className="inline-flex p-4 bg-gradient-to-br from-blue-100 to-pink-100 text-[#1565C0] rounded-full mb-4 shadow-md">
                 <Lock size={32} />
               </div>
+
               <h2 className="text-3xl font-bold bg-gradient-to-r from-[#1565C0] to-[#C2185B] bg-clip-text text-transparent mb-2">
                 {isSignUp ? 'Create Account' : 'Welcome Back'}
               </h2>
+
               <p className="text-gray-600">
                 {isSignUp
                   ? 'Sign up to access wellness resources'
@@ -134,7 +140,10 @@ export default function LoginPage() {
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                  <Mail
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={20}
+                  />
                   <input
                     type="email"
                     required
@@ -151,7 +160,10 @@ export default function LoginPage() {
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                  <Lock
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    size={20}
+                  />
                   <input
                     type={showPassword ? 'text' : 'password'}
                     required
@@ -176,7 +188,10 @@ export default function LoginPage() {
                     Confirm Password
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                    <Lock
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      size={20}
+                    />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       required
@@ -214,17 +229,22 @@ export default function LoginPage() {
               </button>
             </div>
 
-            {/* Demo Credentials */}
             <div className="mt-8 pt-6 border-t-2 border-pink-100">
               <p className="text-xs font-semibold text-gray-700 mb-3 text-center">
                 Demo Credentials (for testing):
               </p>
+
               <div className="space-y-2">
                 {demoCredentials.map((cred, index) => (
                   <button
                     key={index}
+                    type="button"
                     onClick={() => {
-                      setFormData({ ...formData, email: cred.email, password: cred.password });
+                      setFormData({
+                        ...formData,
+                        email: cred.email,
+                        password: cred.password,
+                      });
                       setError('');
                     }}
                     className="w-full p-3 bg-gradient-to-r from-blue-50 to-pink-50 hover:from-blue-100 hover:to-pink-100 rounded-xl text-left transition-all border-2 border-blue-100 hover:border-pink-200 shadow-sm hover:shadow-md"
@@ -234,7 +254,9 @@ export default function LoginPage() {
                         <p className="text-xs font-semibold text-[#1565C0]">{cred.role}</p>
                         <p className="text-xs text-gray-600">{cred.email}</p>
                       </div>
-                      <span className="text-xs text-[#C2185B] font-mono font-medium">{cred.password}</span>
+                      <span className="text-xs text-[#C2185B] font-mono font-medium">
+                        {cred.password}
+                      </span>
                     </div>
                   </button>
                 ))}
@@ -242,7 +264,6 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Mobile Branding */}
           <div className="lg:hidden mt-6 text-center">
             <p className="text-gray-600 text-sm">
               Student Wellness Hub - Your health & wellness platform
