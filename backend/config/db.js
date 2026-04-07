@@ -1,5 +1,4 @@
 const mysql = require('mysql2');
-const fs = require('fs');
 require('dotenv').config();
 
 const db = mysql.createConnection({
@@ -9,7 +8,6 @@ const db = mysql.createConnection({
   database: process.env.DB_NAME,
   port: process.env.DB_PORT,
   ssl: {
-    ca: fs.readFileSync('./ca.pem'),
     rejectUnauthorized: false
   }
 });
