@@ -1,23 +1,21 @@
 const mysql = require('mysql2');
+const fs = require('fs');
 
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT),
+  port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   ssl: {
-    ca: undefined,
-    rejectUnauthorized: false
+   ca: fs.readFileSync(require('path').join(__dirname, '../ca.pem'))
   }
 });
 
 db.connect((err) => {
   if (err) {
-    console.error('❌ DB connection failed:', err);
+    console.log('DB connection failed:', err);
   } else {
-    console.log('✅ Connected to MySQL database');
+    console.log('MySQL connected');
   }
 });
-
-module.exports = db;

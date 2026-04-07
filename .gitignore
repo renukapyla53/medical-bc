@@ -2,5 +2,6 @@ node_modules
 backend/node_modules
 dist
 .env
-backend/.en
+backend/.env
+backend/ca.pem
 .vercel
